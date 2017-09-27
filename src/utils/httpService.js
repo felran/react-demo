@@ -6,10 +6,20 @@ const urls = {
     }
 };
 const http = (module,name,params,method)=>{
+    let _methodArray = ['GET','POST','PUT','DELETE'];
     let _url =  urls[module]?host+urls[module][name]:"";
-    let _params =Object.assign(params||{},{method:method});
+    let _method = method||"GET";
+    if(typeof params==='string' && _methodArray.includes(params.toUpperCase())){
+        _method = params;
+        params = {};
+    }
+    let _params =Object.assign(params,{method:_method});
     return fetch(_url,_params).then(res=>{
-        return res.json();
+        if(res.ok) {
+            return res.json();
+        }else{
+            console.log(res.statusText);
+        }
     });
 };
 export default http;
