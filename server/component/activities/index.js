@@ -1,16 +1,17 @@
 import express from 'express';
+import ActivitiesService from './activitiesService';
 const router = express.Router();
 router.use(function timeLog(req, res, next) {
     console.log('Time: ', Date.now());
     next();
 });
 router.get('/',(req,res)=>{
-    // let result = [{name:"1",price:20.00,salePrice:15.00},{name:"2",price:10.00,salePrice:5.00},{name:"3",price:8.00,salePrice:3.00}];
-    // res.send(JSON.stringify(result));
     res.send('activities home page');
 });
 router.get('/getAll',(req,res)=>{
-    let result = [{name:"1",price:20.00,salePrice:15.00},{name:"2",price:10.00,salePrice:5.00},{name:"3",price:8.00,salePrice:3.00}];
-    res.send(JSON.stringify(result));
+    ActivitiesService.findAll(result=>{
+        console.log(result);
+        res.status(200).send(result);
+    });
 });
 export default router;
