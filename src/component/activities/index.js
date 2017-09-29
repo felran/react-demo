@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {Button, Table, Modal} from 'antd';
+import {Button, Table,Icon} from 'antd';
 import ActivitiesForm from './activitiesForm';
 import HttpService from '../../utils/httpService';
+import './activities.css';
 
 const List = (props) => {
     const column = [
@@ -16,15 +17,17 @@ const List = (props) => {
 class Activities extends Component {
     constructor(props) {
         super(props);
-        this.state = {list: []};
+        this.state = {
+            list: [],
+            fields: {
+                price:0,
+                salePrice:0,
+                startDate:new Date(),
+                endDate:new Date(new Date().getTime()+7*24*60*60*1000)
+            }
+        };
         this.getList();
     }
-    state = {
-        fields: {name:{value:"123"}},
-    };
-    saveFormRef = (form) => {
-        this.form = form;
-    };
     getList = () => {
         let _this = this;
         HttpService('activities', 'getAll', 'GET').then(data => {
@@ -34,30 +37,26 @@ class Activities extends Component {
     openAddModal = () => {
         this.setState({showAddModal: true});
     };
-    onCancel = () => {
-        this.setState({showAddModal: false});
-    };
-    onAdd = () => {
-        let form = this.form;
-        console.log(form.getFieldsValue());
+    hideAddModal = ()=>{
+        this.setState({showAddModal:false});
     };
     render() {
-        return (
-                <div className="activities-content">
-                    <div className="activities-toolbar"><Button onClick={this.openAddModal.bind(this)}>添加</Button></div>
-                    <div className="activities-table">
-                        <List list={this.state.list}/>
-                    </div>
-                    <Modal
-                            onOk={this.onAdd}
-                            onCancel={this.onCancel}
-                            okText='确定' cancelText='取消'
-                            visible={this.state.showAddModal}
-                            title='添加'>
-                        <ActivitiesForm ref={this.saveFormRef} {...this.state.fields}/>
-                    </Modal>
-                </div>
-        )
+        if(!this.state.showAddModal) {
+            return (<div className="activities-content">
+                        <div className="activities-toolbar"><Button onClick={this.openAddModal.bind(this)}>添加</Button></div>
+                        <div className="activities-table">
+                            <List list={this.state.list}/>
+                        </div>
+                    </div>);
+        }else {
+            return (<div className="activities-content">
+                        <div className="activities-editor-title">
+                            <span className="left" onClick={this.hideAddModal.bind(this)}><Icon type="arrow-left" />返回列表</span>
+                            <span>添加活动商品</span>
+                        </div>
+                        <ActivitiesForm {...this.state.fields} onFieldChange={this.fieldChange}/>
+                    </div>);
+        }
     }
 }
 

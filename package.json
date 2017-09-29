@@ -9,6 +9,7 @@
     "mongoose": "^4.11.13",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
+    "react-image-crop": "^2.0.8",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.13"
   },
