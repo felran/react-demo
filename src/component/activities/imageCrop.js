@@ -15,14 +15,20 @@ class ImageCrop extends Component {
             maxHeight: 90,
         };
     }
-    onImageLoaded = (crop) => {
-        console.log('Image was loaded. Crop:', crop);
+    onImageLoaded = (crop,imageEle) => {
+        this.imageEle = imageEle;
     };
     onCropComplete = (crop, pixelCrop) => {
         this.setState({crop});
+        this.setState({pixelCrop});
     };
     onCropOk = ()=>{
-        this.props.onCropOk(this.state.crop);
+        let crop = this.state.pixelCrop;
+        console.log(crop);
+        let ctx=this.canvas.getContext('2d');
+        ctx.drawImage( this.imageEle, crop.x, crop.y, crop.width, crop.height, 0, 0, 80, 45);
+        let src = this.canvas.toDataURL('image/png');
+        this.props.onCropOk(src);
     };
     render() {
         return (
@@ -40,6 +46,9 @@ class ImageCrop extends Component {
                             <Button onClick={this.props.cancelCrop}>取消</Button>
                         </Col>
                     </div>
+                    <canvas style={{display:'none'}} ref={canvas=>this.canvas=canvas}>
+
+                    </canvas>
                 </div>
         );
     }

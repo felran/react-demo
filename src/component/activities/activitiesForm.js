@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Form, Button, DatePicker, Input, Icon} from 'antd';
+import {Form, Button, DatePicker, Input, Icon,Col} from 'antd';
 import ImageCrop from './imageCrop';
 import moment from 'moment';
 const FormItem = Form.Item;
@@ -31,11 +31,8 @@ class Cover extends Component{
         };
         reader.readAsDataURL(file);
     };
-    onCropOk=(crop)=>{
-        // let canvas=$('<canvas width="'+width+'" height="'+height+'"></canvas>')[0],
-        //         ctx=canvas.getContext('2d');
-        //
-        // ctx.drawImage(image,x,y,width,height,0,0,width,height);//重绘
+    onCropOk=(src)=>{
+        this.setState({cover:src,file2Crop:undefined});
     };
     cancelCrop = ()=> {
         this.setState({cover: false});
@@ -43,11 +40,14 @@ class Cover extends Component{
     render() {
         if (this.state.cover) {
             return (
-                    <img src={this.state.cover}/>
+                    <div>
+                        <img src={this.state.cover}/>
+                        <div>修改</div>
+                    </div>
             );
         }else if(this.state.file2Crop){
             return (
-                    <ImageCrop src={this.state.cover} onCropOk={this.onCropOk} cancelCrop={this.cancelCrop}/>
+                    <ImageCrop src={this.state.file2Crop} onCropOk={this.onCropOk} cancelCrop={this.cancelCrop}/>
             );
         }
         else {
@@ -80,6 +80,10 @@ class ActivitiesForm extends Component{
         let date = {'startDate':dateString[0],'endDate':dateString[1]};
         this.setState({'fields':Object.assign(this.state.fields,date)});
     };
+    submit = ()=>{
+        let formData = this.state.fields;
+
+    };
     render() {
         const dateFormat = 'YYYY/MM/DD';
         return (
@@ -107,13 +111,12 @@ class ActivitiesForm extends Component{
                     <FormItem {...this.formItemLayout} label="封面">
                         <Cover cover = {this.props.cover} onChangeCover={this.onChangeCover}/>
                     </FormItem>
-                    {/*<FormItem style={{'marginTop':'30px'}}>*/}
-                        {/*<Col span={2}>&nbsp;</Col>*/}
-                        {/*<Col span={10} style={{textAlign:'right'}}>*/}
-                            {/*<Button type="primary" style={{marginRight:'20px'}}>确认</Button>*/}
-                            {/*<Button>取消</Button>*/}
-                        {/*</Col>*/}
-                    {/*</FormItem>*/}
+                    <FormItem style={{'marginTop':'100px'}}>
+                        <Col span={2}>&nbsp;</Col>
+                        <Col span={10} style={{textAlign:'right'}}>
+                            <Button type="primary" onClick={this.submit.bind(this)} style={{width:'100%',marginRight:'20px'}}>提交</Button>
+                        </Col>
+                    </FormItem>
                 </Form>
         );
     }
